@@ -1,0 +1,61 @@
+{
+  "name": "bolt-module-dashboard",
+  "version": "1.2.0",
+  "description": "Module to install /api/dashboard routes in Bolt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chieze-Franklin/bolt-module-dashboard"
+  },
+  "author": "Chieze Franklin",
+  "bugs": {
+    "url": "https://github.com/Chieze-Franklin/bolt-module-dashboard/issues"
+  },
+  "dependencies": {
+    "bolt-internal-checks": "*",
+    "bolt-internal-config": "*",
+    "bolt-internal-defs": "*",
+    "bolt-internal-errors": "*",
+    "bolt-internal-get-routes": "*",
+    "bolt-internal-models": "*",
+    "bolt-internal-schemata": "*",
+    "bolt-internal-setup": "*",
+    "bolt-internal-utils": "*"
+  },
+  "keywords": [
+    "bolt",
+    "module",
+    "dashboard",
+    "bolt-module-dashboard"
+  ],
+  "bolt": {
+    "displayName": "Bolt Dashboard Module",
+    "collections": {
+      "cards": {
+        "guests": "*",
+        "tenants": [
+          "bolt"
+        ]
+      },
+      "tiles": {
+        "guests": "*",
+        "tenants": [
+          "bolt"
+        ]
+      },
+      "views": {
+        "guests": "*",
+        "tenants": [
+          "bolt"
+        ]
+      }
+    },
+    "module": true,
+    "system": true,
+    "routers": {
+      "bolt-api-dashboard": {
+        "main": "routers/api-dashboard",
+        "root": "/api/dashboard"
+      }
+    }
+  }
+}
