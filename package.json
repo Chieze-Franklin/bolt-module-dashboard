@@ -1,6 +1,6 @@
 {
   "name": "bolt-module-dashboard",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Module to install /api/dashboard routes in Bolt",
   "repository": {
     "type": "git",

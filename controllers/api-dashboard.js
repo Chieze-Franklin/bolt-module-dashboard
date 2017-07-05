@@ -76,7 +76,7 @@ module.exports = {
 		superagent
 			.post(process.env.BOLT_ADDRESS + '/api/db/cards/replace?app=' + request.appName)
 			.set(X_BOLT_APP_TOKEN, request.appToken) //see **Impersonating Bolt** above to understand this line
-			.send({ app: 'bolt-module-dashboard', values: card, upsert: true, multi: true })
+			.send({ app: 'bolt-module-dashboard', values: card, upsert: true })
 			.end(function(err, res) {
 				utils.Events.fire('dashboard-card-posted', { body: card }, request.appToken, function(eventError, eventResponse){});
 			});
@@ -108,7 +108,7 @@ module.exports = {
 		superagent
 			.post(process.env.BOLT_ADDRESS + '/api/db/tiles/replace?app=' + request.appName)
 			.set(X_BOLT_APP_TOKEN, request.appToken) //see **Impersonating Bolt** above to understand this line
-			.send({ app: 'bolt-module-dashboard', values: tile, upsert: true, multi: true })
+			.send({ app: 'bolt-module-dashboard', values: tile, upsert: true })
 			.end(function(err, res) {
 				utils.Events.fire('dashboard-tile-posted', { body: tile }, request.appToken, function(eventError, eventResponse){});
 			});
