@@ -42,14 +42,7 @@ module.exports = {
 			});
 	},
 	deleteView: function(request, response){
-		superagent
-			.post(process.env.BOLT_ADDRESS + '/api/db/views/remove?app=' + request.appName)
-			.set(X_BOLT_APP_TOKEN, request.appToken) //see **Impersonating Bolt** above to understand this line
-			.send({ app: 'bolt-module-dashboard' })
-			.end(function(err, res) {
-				//TODO: get the view deleted
-				utils.Events.fire('dashboard-view-deleted', { body: { app: request.appName } }, request.appToken, function(eventError, eventResponse){});
-			});
+		utils.Events.fire('dashboard-view-deleted', { body: { app: request.appName } }, request.appToken, function(eventError, eventResponse){});
 	},
 	postCard: function(request, response){
 		/*

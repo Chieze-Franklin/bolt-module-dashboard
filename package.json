@@ -41,12 +41,6 @@
         "tenants": [
           "bolt"
         ]
-      },
-      "views": {
-        "guests": "*",
-        "tenants": [
-          "bolt"
-        ]
       }
     },
     "module": true,
