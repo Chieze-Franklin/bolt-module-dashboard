@@ -24,25 +24,28 @@ module.exports = {
 	deleteCard: function(request, response){
 		superagent
 			.post(process.env.BOLT_ADDRESS + '/api/db/cards/remove?app=' + request.appName)
-			.set(X_BOLT_APP_TOKEN, request.appToken) //see **Impersonating Bolt** above to understand this line
+			.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
 			.send({ app: 'bolt-module-dashboard' })
 			.end(function(err, res) {
 				//TODO: get the card deleted
-				utils.Events.fire('dashboard-card-deleted', { body: { app: request.appName } }, request.appToken, function(eventError, eventResponse){});
+				utils.Events.fire('dashboard-card-deleted', { body: { app: request.appName } }, request.bolt.token, function(eventError, eventResponse){});
+				response.send(utils.Misc.createResponse({ app: request.appName }, err));
 			});
 	},
 	deleteTile: function(request, response){
 		superagent
 			.post(process.env.BOLT_ADDRESS + '/api/db/tiles/remove?app=' + request.appName)
-			.set(X_BOLT_APP_TOKEN, request.appToken) //see **Impersonating Bolt** above to understand this line
+			.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
 			.send({ app: 'bolt-module-dashboard' })
 			.end(function(err, res) {
 				//TODO: get the tile deleted
-				utils.Events.fire('dashboard-tile-deleted', { body: { app: request.appName } }, request.appToken, function(eventError, eventResponse){});
+				utils.Events.fire('dashboard-tile-deleted', { body: { app: request.appName } }, request.bolt.token, function(eventError, eventResponse){});
+				response.send(utils.Misc.createResponse({ app: request.appName }, err));
 			});
 	},
 	deleteView: function(request, response){
-		utils.Events.fire('dashboard-view-deleted', { body: { app: request.appName } }, request.appToken, function(eventError, eventResponse){});
+		utils.Events.fire('dashboard-view-deleted', { body: { app: request.appName } }, request.bolt.token, function(eventError, eventResponse){});
+		response.send(utils.Misc.createResponse({ app: request.appName }, err));
 	},
 	postCard: function(request, response){
 		/*
@@ -50,6 +53,8 @@ module.exports = {
 		{
 			"type": String, //(optional), values: 'text' (default), 'image'
 			"app": String, //the name of the app that owns this card (request.appName)
+			"route": String, //
+			"query": String, //
 			"background": String, //the background colour (for type=='text') or image (for type='image') of the card
 			"caption": String, //the bold text of the card (ignored if type=='image')
 			"message": String //(optional) the description of the caption of the card (ignored if type=='image')
@@ -59,6 +64,8 @@ module.exports = {
 		var card = {
 			app: request.appName,
 			background: request.body.background,
+			query: request.body.query,
+			route: request.body.route,
 			type: request.body.type
 		};
 		if (request.body.type !== 'image') {
@@ -68,10 +75,11 @@ module.exports = {
 
 		superagent
 			.post(process.env.BOLT_ADDRESS + '/api/db/cards/replace?app=' + request.appName)
-			.set(X_BOLT_APP_TOKEN, request.appToken) //see **Impersonating Bolt** above to understand this line
+			.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
 			.send({ app: 'bolt-module-dashboard', values: card, upsert: true })
 			.end(function(err, res) {
-				utils.Events.fire('dashboard-card-posted', { body: card }, request.appToken, function(eventError, eventResponse){});
+				utils.Events.fire('dashboard-card-posted', { body: card }, request.bolt.token, function(eventError, eventResponse){});
+				response.send(utils.Misc.createResponse(card, err));
 			});
 	},
 	postTile: function(request, response){
@@ -100,10 +108,11 @@ module.exports = {
 
 		superagent
 			.post(process.env.BOLT_ADDRESS + '/api/db/tiles/replace?app=' + request.appName)
-			.set(X_BOLT_APP_TOKEN, request.appToken) //see **Impersonating Bolt** above to understand this line
+			.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
 			.send({ app: 'bolt-module-dashboard', values: tile, upsert: true })
 			.end(function(err, res) {
-				utils.Events.fire('dashboard-tile-posted', { body: tile }, request.appToken, function(eventError, eventResponse){});
+				utils.Events.fire('dashboard-tile-posted', { body: tile }, request.bolt.token, function(eventError, eventResponse){});
+				response.send(utils.Misc.createResponse(tile, err));
 			});
 	},
 	postView: function(request, response){
@@ -125,6 +134,7 @@ module.exports = {
 		};
 
 		//views are not persisted in the database, so we just fire them
-		utils.Events.fire('dashboard-view-posted', { body: view }, request.appToken, function(eventError, eventResponse){});
+		utils.Events.fire('dashboard-view-posted', { body: view }, request.bolt.token, function(eventError, eventResponse){});
+		response.send(utils.Misc.createResponse(view, err));
 	}
 };
