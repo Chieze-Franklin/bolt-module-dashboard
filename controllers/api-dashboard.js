@@ -22,30 +22,33 @@ we have to use bolt's app token because bolt-module-dashboard can't have an app 
 
 module.exports = {
 	deleteCard: function(request, response){
+		var appName = request.appName;
 		superagent
-			.post(process.env.BOLT_ADDRESS + '/api/db/cards/remove?app=' + request.appName)
+			.post(process.env.BOLT_ADDRESS + '/api/db/cards/remove?app=' + appName)
 			.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
 			.send({ app: 'bolt-module-dashboard' })
 			.end(function(err, res) {
 				//TODO: get the card deleted
-				utils.Events.fire('dashboard-card-deleted', { body: { app: request.appName } }, request.bolt.token, function(eventError, eventResponse){});
-				response.send(utils.Misc.createResponse({ app: request.appName }, err));
+				utils.Events.fire('dashboard-card-deleted', { body: { app: appName } }, request.bolt.token, function(eventError, eventResponse){});
+				response.send(utils.Misc.createResponse({ app: appName }, err));
 			});
 	},
 	deleteTile: function(request, response){
+		var appName = request.appName;
 		superagent
-			.post(process.env.BOLT_ADDRESS + '/api/db/tiles/remove?app=' + request.appName)
+			.post(process.env.BOLT_ADDRESS + '/api/db/tiles/remove?app=' + appName)
 			.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
 			.send({ app: 'bolt-module-dashboard' })
 			.end(function(err, res) {
 				//TODO: get the tile deleted
-				utils.Events.fire('dashboard-tile-deleted', { body: { app: request.appName } }, request.bolt.token, function(eventError, eventResponse){});
-				response.send(utils.Misc.createResponse({ app: request.appName }, err));
+				utils.Events.fire('dashboard-tile-deleted', { body: { app: appName } }, request.bolt.token, function(eventError, eventResponse){});
+				response.send(utils.Misc.createResponse({ app: appName }, err));
 			});
 	},
 	deleteView: function(request, response){
-		utils.Events.fire('dashboard-view-deleted', { body: { app: request.appName } }, request.bolt.token, function(eventError, eventResponse){});
-		response.send(utils.Misc.createResponse({ app: request.appName }, err));
+		var appName = request.appName;
+		utils.Events.fire('dashboard-view-deleted', { body: { app: appName } }, request.bolt.token, function(eventError, eventResponse){});
+		response.send(utils.Misc.createResponse({ app: appName }));
 	},
 	postCard: function(request, response){
 		/*
@@ -135,6 +138,37 @@ module.exports = {
 
 		//views are not persisted in the database, so we just fire them
 		utils.Events.fire('dashboard-view-posted', { body: view }, request.bolt.token, function(eventError, eventResponse){});
-		response.send(utils.Misc.createResponse(view, err));
+		response.send(utils.Misc.createResponse(view));
+	},
+
+	hookForBoltAppUninstalled: function(request, response){
+		var event = request.body;
+		if (event.token == request.bolt.token) {
+			var app = event.body;
+
+			var appName = app.name;
+
+			superagent
+				.post(process.env.BOLT_ADDRESS + '/api/db/cards/remove?app=' + appName)
+				.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
+				.send({ app: 'bolt-module-dashboard' })
+				.end(function(err, res) {
+					//TODO: get the card deleted
+					utils.Events.fire('dashboard-card-deleted', { body: { app: appName } }, request.bolt.token, function(eventError, eventResponse){});
+				});
+
+			superagent
+				.post(process.env.BOLT_ADDRESS + '/api/db/tiles/remove?app=' + appName)
+				.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
+				.send({ app: 'bolt-module-dashboard' })
+				.end(function(err, res) {
+					//TODO: get the tile deleted
+					utils.Events.fire('dashboard-tile-deleted', { body: { app: appName } }, request.bolt.token, function(eventError, eventResponse){});
+				});
+
+			utils.Events.fire('dashboard-view-deleted', { body: { app: appName } }, request.bolt.token, function(eventError, eventResponse){});
+			
+			response.send(utils.Misc.createResponse({ app: appName }));
+		}
 	}
 };

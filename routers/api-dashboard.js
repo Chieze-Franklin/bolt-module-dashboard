@@ -24,4 +24,6 @@ router.post('/tile', checksCtrlr.getAppName, apiDashboardCtrlr.postTile);
 //post view
 router.post('/view', checksCtrlr.getAppName, apiDashboardCtrlr.postView);
 
+router.post('/hooks/bolt/app-uninstalled', apiDashboardCtrlr.hookForBoltAppUninstalled);
+
 module.exports = router;
