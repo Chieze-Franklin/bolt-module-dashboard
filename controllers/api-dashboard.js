@@ -60,13 +60,15 @@ module.exports = {
 			"query": String, //
 			"background": String, //the background colour (for type=='text') or image (for type='image') of the card
 			"caption": String, //the bold text of the card (ignored if type=='image')
-			"message": String //(optional) the description of the caption of the card (ignored if type=='image')
+			"message": String, //(optional) the description of the caption of the card (ignored if type=='image')
+			"more": String //(optional) a link to more info
 		}
 		*/
 
 		var card = {
 			app: request.appName,
 			background: request.body.background,
+			more: request.body.more,
 			query: request.body.query,
 			route: request.body.route,
 			type: request.body.type
@@ -75,7 +77,7 @@ module.exports = {
 			card.caption = request.body.caption;
 			card.message = request.body.message;
 		}
-
+		
 		superagent
 			.post(process.env.BOLT_ADDRESS + '/api/db/cards/replace?app=' + request.appName)
 			.set(X_BOLT_APP_TOKEN, request.bolt.token) //see **Impersonating Bolt** above to understand this line
@@ -91,17 +93,19 @@ module.exports = {
 		{
 			"type": String, //(optional), values: 'text' (default), 'image'
 			"app": String, //the name of the app that owns this tile (request.appName)
+			"route": String, //
+			"query": String, //
 			"background": String, //the background colour (for type=='text') or image (for type='image') of the tile
 			"caption": String, //the bold text of the tile (ignored if type=='image')
-			"message": String, //(optional) the description of the caption of the tile (ignored if type=='image')
-			"more": String //(optional) a link to more info
+			"message": String //(optional) the description of the caption of the tile (ignored if type=='image')
 		}
 		*/
 
 		var tile = {
 			app: request.appName,
 			background: request.body.background,
-			more: request.body.more,
+			query: request.body.query,
+			route: request.body.route,
 			type: request.body.type
 		};
 		if (request.body.type !== 'image') {
