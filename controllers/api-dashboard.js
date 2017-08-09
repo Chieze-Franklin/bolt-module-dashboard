@@ -68,7 +68,6 @@ module.exports = {
 		var card = {
 			app: request.appName,
 			background: request.body.background,
-			more: request.body.more,
 			query: request.body.query,
 			route: request.body.route,
 			type: request.body.type
@@ -127,17 +126,21 @@ module.exports = {
 		*** schema of a view ***
 		{
 			"app": String, //the name of the app that owns this view (request.appName)
+			"caption": String,
+			"route": String, //
+			"query": String, //
 			"height": Number, //the preferred height of the view
 			"width": Number, //the preferred width of the view
-			"url": String //the URL from which the view's content is fetched
 		}
 		*/
 
 		var view = {
 			app: request.appName,
+			caption: request.body.caption,
 			height: request.body.height,
-			width: request.body.width,
-			url: request.body.url
+			query: request.body.query,
+			route: request.body.route,
+			width: request.body.width
 		};
 
 		//views are not persisted in the database, so we just fire them
