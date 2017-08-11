@@ -59,8 +59,8 @@ module.exports = {
 			"route": String, //
 			"query": String, //
 			"background": String, //the background colour (for type=='text') or image (for type='image') of the card
-			"caption": String, //the bold text of the card (ignored if type=='image')
-			"message": String, //(optional) the description of the caption of the card (ignored if type=='image')
+			"subject": String, //the bold text of the card (ignored if type=='image')
+			"message": String, //(optional) the description of the subject of the card (ignored if type=='image')
 			"more": String //(optional) a link to more info
 		}
 		*/
@@ -70,10 +70,10 @@ module.exports = {
 			background: request.body.background,
 			query: request.body.query,
 			route: request.body.route,
+			subject: request.body.subject,
 			type: request.body.type
 		};
 		if (request.body.type !== 'image') {
-			card.caption = request.body.caption;
 			card.message = request.body.message;
 		}
 		
@@ -95,8 +95,8 @@ module.exports = {
 			"route": String, //
 			"query": String, //
 			"background": String, //the background colour (for type=='text') or image (for type='image') of the tile
-			"caption": String, //the bold text of the tile (ignored if type=='image')
-			"message": String //(optional) the description of the caption of the tile (ignored if type=='image')
+			"subject": String, //the bold text of the tile (ignored if type=='image')
+			"message": String //(optional) the description of the subject of the tile (ignored if type=='image')
 		}
 		*/
 
@@ -105,10 +105,10 @@ module.exports = {
 			background: request.body.background,
 			query: request.body.query,
 			route: request.body.route,
+			subject: request.body.subject,
 			type: request.body.type
 		};
 		if (request.body.type !== 'image') {
-			tile.caption = request.body.caption;
 			tile.message = request.body.message;
 		}
 
@@ -126,7 +126,7 @@ module.exports = {
 		*** schema of a view ***
 		{
 			"app": String, //the name of the app that owns this view (request.appName)
-			"caption": String,
+			"subject": String,
 			"route": String, //
 			"query": String, //
 			"height": Number, //the preferred height of the view
@@ -136,7 +136,7 @@ module.exports = {
 
 		var view = {
 			app: request.appName,
-			caption: request.body.caption,
+			subject: request.body.subject,
 			height: request.body.height,
 			query: request.body.query,
 			route: request.body.route,
